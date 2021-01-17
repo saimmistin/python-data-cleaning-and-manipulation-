@@ -1,0 +1,43 @@
+import pandas as pd
+
+df =pd.read_csv('exercise_course.csv')
+
+pd.set_option('max_columns', None)
+
+#sum bytes per url
+
+df2 = df.groupby('url')['bytes'].sum().reset_index()
+
+#sort values
+
+df2 = df2.sort_values('bytes', ascending= False)
+
+
+#define a function to calculate female bytes
+def female_bytes(row):
+    if row['gender'] == 'Female' :
+        return row['bytes']
+
+#define a function to calculate male bytes
+def male_bytes(row):
+    if row['gender'] == 'Male' :
+        return row['bytes']
+
+#create a female_bytes column which populated by female bbytes function
+
+df['female_bytes'] = df.apply(female_bytes, axis = 1)
+
+#create a female_bytes column which populated by female bbytes function
+
+df['male_bytes'] = df.apply(male_bytes, axis = 1)
+
+#sum bytes by male and female
+
+df3 = df.groupby('url')['male_bytes','female_bytes','bytes'].sum()
+
+# sum bytes by male and female and group by country and url
+
+df4 = df.groupby(['country','url'])['male_bytes','female_bytes'].sum()
+
+
+print(df4)
